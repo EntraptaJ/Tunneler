@@ -1,11 +1,25 @@
 // Server/src/index.ts
-import { createSocket } from 'dgram';
-import { createConnection } from 'net';
+import express from 'express';
+import expressWs from 'express-ws';
+import { createUDPServer } from './Servers';
+/*import { createSocket } from 'dgram';
+import { createConnection } from 'net'; */
 
-const SERVER_PORT = process.env.SERVER_PORT || '53';
+// const SERVER_PORT = process.env.SERVER_PORT || '53';
+
+const app = express();
 
 async function startAPI(): Promise<void> {
-  const server = createSocket('udp4');
+  const ws = expressWs(app);
+
+  ws.app.ws('/test/:id', async (a, b) => {
+    await createUDPServer(b.params.id, a);
+  });
+
+  await app.listen(80);
+  console.log('API server listening on port 80');
+
+  /* const server = createSocket('udp4');
 
   server.on('message', (msg, clnt) => {
     const client = createConnection({ host: 'clientudp', port: 5859 }, () => {
@@ -17,9 +31,8 @@ async function startAPI(): Promise<void> {
     });
   });
 
-  server.bind(parseInt(SERVER_PORT));
-
-  console.log(`Server listening on UDP ${SERVER_PORT}`);
+  server.bind(pa
+  console.log(`Server listening on UDP ${SERVER_PORT}`); */
 }
 
 startAPI();
