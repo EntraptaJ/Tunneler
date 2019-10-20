@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  api:
+    build:
+      context: './API'
+      dockerfile: 'Dockerfile.dev'
+    image: 'applicationtemplate'
+    ports:
+      - 53:53/udp
+    volumes:
+      - './API:/development'
+  clientudp:
+    build:
+      context: './ClientUDP'
+      dockerfile: 'Dockerfile.dev'
+    image: 'applicationtemplate'
+    volumes:
+      - './ClientUDP:/development'
