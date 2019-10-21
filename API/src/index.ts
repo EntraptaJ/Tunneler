@@ -13,6 +13,7 @@ async function startAPI(): Promise<void> {
   const ws = expressWs(app);
 
   ws.app.ws('/test/:id', async (a, b) => {
+    console.log('Web Socket Open');
     await createUDPServer(b.params.id, a);
   });
 

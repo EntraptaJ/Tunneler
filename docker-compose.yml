@@ -16,3 +16,7 @@ services:
     image: 'applicationtemplate'
     volumes:
       - './ClientUDP:/development'
+  rns1:
+    image: resystit/bind9:latest
+    volumes:
+      - './named.conf:/etc/bind/named.conf'

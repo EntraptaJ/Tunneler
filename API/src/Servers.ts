@@ -17,15 +17,21 @@ export async function createUDPServer(
   const clientServer = clientServers.find(({ id }) => id === Id);
   if (!clientServer) throw new Error('INVALID CLIENT');
 
-  if (clientServer.udpServer) return;
-
-  const server = createSocket('udp4');
-  clientServer.udpServer = server;
+  let server: Socket;
+  if (!clientServer.udpServer) {
+    server = createSocket('udp4');
+    clientServer.udpServer = server;
+    server.bind(parseInt(clientServer.port));
+  } else server = clientServer.udpServer;
 
   let info: RemoteInfo;
 
   server.on('message', (msg, clnt) => {
-    console.log('Got UDP Info');
+    if (webSocket.readyState !== 1) {
+      console.log(webSocket.readyState);
+      return;
+    }
+
     webSocket.send(msg);
     info = clnt;
   });
@@ -34,6 +40,4 @@ export async function createUDPServer(
     console.log('Got Response', data.toString());
     server.send(data, info.port, info.address);
   });
-
-  server.bind(parseInt(clientServer.port));
 }
